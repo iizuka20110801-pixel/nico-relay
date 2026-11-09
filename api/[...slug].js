@@ -142,8 +142,11 @@ export default async function handler(req, res) {
   const raw = req.url || '';
   const host = req.headers.host;
   const qIndex = raw.indexOf('?');
-  const path = qIndex >= 0 ? raw.slice(0, qIndex) : raw;
+  let path = qIndex >= 0 ? raw.slice(0, qIndex) : raw;
   const search = qIndex >= 0 ? raw.slice(qIndex + 1) : '';
+
+  if (path.startsWith('/api/')) path = path.slice(4);
+  else if (path === '/api') path = '/';
 
   if (path.startsWith('/v/')) {
     const id = decodeURIComponent(path.slice(3)).replace(/[^A-Za-z0-9_]/g, '');
@@ -190,9 +193,9 @@ export default async function handler(req, res) {
       if (!line) return line;
       if (line.charAt(0) === '#') {
         return line.replace(/URI="([^"]+)"/g, (m, p) =>
-          'URI="https://' + host + '/p/' + encodeURIComponent(abs(p, target)) + suffix + '"');
+          'URI="https://' + host + '/api/p/' + encodeURIComponent(abs(p, target)) + suffix + '"');
       }
-      return 'https://' + host + '/p/' + encodeURIComponent(abs(line, target)) + suffix;
+      return 'https://' + host + '/api/p/' + encodeURIComponent(abs(line, target)) + suffix;
     }).join('\n');
     res.setHeader('content-type', 'application/vnd.apple.mpegurl');
     res.setHeader('cache-control', 'no-store');
@@ -203,4 +206,4 @@ export default async function handler(req, res) {
   res.setHeader('content-type', ct || 'video/mp2t');
   res.setHeader('cache-control', 'public, max-age=3600');
   return res.status(r.status).send(buf);
-}
+  }
