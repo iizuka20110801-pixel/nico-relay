@@ -206,4 +206,4 @@ export default async function handler(req, res) {
   res.setHeader('content-type', ct || 'video/mp2t');
   res.setHeader('cache-control', 'public, max-age=3600');
   return res.status(r.status).send(buf);
-  }
+          }
