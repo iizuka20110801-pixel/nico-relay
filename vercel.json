@@ -1,6 +1,9 @@
 {
   "regions": ["hnd1"],
   "functions": {
-    "api/*.js": { "maxDuration": 30 }
-  }
+    "api/index.js": { "maxDuration": 30 }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index" }
+  ]
 }
